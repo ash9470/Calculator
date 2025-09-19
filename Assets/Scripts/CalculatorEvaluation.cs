@@ -13,7 +13,9 @@ public static class CalculatorEvaluation
         {
             var token = Tokenize(Value);
             var postfix = ToPostfix(token);
+            Debug.Log("Pfix" + postfix);
             var value = SolvePostfix(postfix);
+            Debug.Log("VAl" + value);
             return (true, value.ToString(CultureInfo.InvariantCulture));
         }
         catch (DivideByZeroException)
@@ -56,7 +58,7 @@ public static class CalculatorEvaluation
             }
 
             // Operators and parentheses
-            if ("+-*/()".Contains(c))
+            if ("+-*/".Contains(c))
             {
                 result.Add(c.ToString());
                 i++;
@@ -69,8 +71,8 @@ public static class CalculatorEvaluation
         return result;
     }
 
-    // Operator precedence 
-    private static int Precedence(string op)
+    // Operator Handeler 
+    private static int GetOperators(string op)
     {
         if (op == "*" || op == "/") return 2;
         if (op == "+" || op == "-") return 1;
@@ -92,7 +94,7 @@ public static class CalculatorEvaluation
             }
             else if ("+-*/".Contains(t))
             {
-                while (stack.Count > 0 && "+-*/".Contains(stack.Peek()) && Precedence(stack.Peek()) >= Precedence(t))
+                while (stack.Count > 0 && "+-*/".Contains(stack.Peek()) && GetOperators(stack.Peek()) >= GetOperators(t))
                 {
                     output.Add(stack.Pop());
                 }
@@ -104,7 +106,6 @@ public static class CalculatorEvaluation
         while (stack.Count > 0)
         {
             var op = stack.Pop();
-            if (op == "(") throw new Exception("Mismatched parentheses");
             output.Add(op);
         }
 
